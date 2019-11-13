@@ -25,8 +25,8 @@ object GitStream {
     val separateColumnsDataFrame = dataindataframe.select(from_json(col("value").cast("string"), schema).as("data")).select("data.*")
     val RemoveDf = separateColumnsDataFrame.drop("Machine_status","Machine_MAC_address","Last_Configued_Date","Machine_name","Machine_type","Machine_IP_Address")
     val whitespace = RemoveDf.na.fill("null",Seq("Calibration_Name","Calibrator","Analyzer","Notification_Message")).na.replace(Seq("Calibration_Name","Calibrator","Analyzer","Notification_Message"),Map("null"->"NA"))
-    //whitespace.writeStream.format("text").option("path","/user/parth/").option("checkpointLocation", "path-to-checkpointing").start()
-    whitespace.writeStream.outputMode("append").format("org.elasticsearch.spark.sql").option("checkpointLocation","path-to-checkpointing1").option("es.port","9200").option("es.nodes","172.16.3.11").start("realtime/Gpcb_type").awaitTermination()
+    //whitespace.writeStream.format("console").start()
+    whitespace.writeStream.outputMode("append").format("org.elasticsearch.spark.sql").option("checkpointLocation","RealtimeCheckPoint").option("es.port","9200").option("es.nodes","172.16.2.12").start("gpcbtransformation/Gpcb_type").awaitTermination()
     
   }
   
